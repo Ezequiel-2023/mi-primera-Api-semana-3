@@ -2,8 +2,6 @@
 
 var express = require('express');
 var router = express.Router();
-
-// creamos nuestro arreglo para las respuestas 
 let tasks = []
 
 /* Get  */

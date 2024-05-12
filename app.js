@@ -1,3 +1,4 @@
+// App servidor 
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -12,6 +13,7 @@ var tasksRouter = require('./routes/tasks')
 const { error } = require('console');
 const router =  express.Router();
 var cors = require('cors');
+const bodyParser = require('body-parser');
 
 var app = express();
 
@@ -25,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
 
 router.use((req, res, next) =>{
    if(req.headers.authorization && req.headers.authorization === 'desarrolloDeAplicacionesWeb'){
