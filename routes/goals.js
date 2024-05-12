@@ -13,17 +13,25 @@ router.get('/getGoals', function(req, res, next) {
 
 /* Post  */
 router.post('/addGoals', function(req, res, next) {
-    let timeStamp = Date.now()+Math.random();
-    req.body.id = timeStamp.toString()
-    goals.push(req.body)
-    res.json(goals)
-  });
+  let timeStamp = Date.now()+Math.random();
+    if (req.body && req.body.name && req.body.description && req.body.dueDate) {
+      req.body.id = timeStamp.toString()
+      tasks.push(req.body)
+      res.status(200).json(tasks)
+  } else {
+    res.status(400).json({error:'no se enviaron los parametros correctos'})
+  }  
+});
 
   /* Delete */
 router.delete('/removeGoals/:id', function(req, res, next) {
-  let id = req.params.id;
-  goals = goals.filter(goal => goal.id !== id);
-  res.json(goals)
+   if (req.params && req.params.id) {
+      let id = req.params.id;
+      tasks = tasks.filter(task => task.id !== id);
+      res.json(tasks)
+   }   else {
+    res.status(200).json(tasks)
+  }
 });
 
 module.exports = router;

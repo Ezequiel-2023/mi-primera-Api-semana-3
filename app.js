@@ -10,14 +10,15 @@ var usersRouter = require('./routes/users');
 var goalsRouter = require('./routes/goals');
 var tasksRouter = require('./routes/tasks')
 const { error } = require('console');
-const router =  express.Router()
+const router =  express.Router();
+var cors = require('cors');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
+app.use(cors());
 app.use('/', router);
 app.use(logger('dev'));
 app.use(express.json());
@@ -29,7 +30,7 @@ router.use((req, res, next) =>{
    if(req.headers.authorization && req.headers.authorization === 'desarrolloDeAplicacionesWeb'){
     next();
    }else{
-    res.json({'error':'no se estan enviado las credenciales'})
+    res.status(401).json({'error':'no se estan enviado las credenciales'})
    }
 
 });
