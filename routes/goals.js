@@ -4,32 +4,55 @@ var express = require('express');
 var router = express.Router();
 let goals = []
 
+const mysql = require('mysql2')
+
+var conection = mysql.createConnection({
+  host : 'localhost',
+  user : 'root',
+  password : 'Ardi_192*',
+  database : 'mysql'
+});
+
 /* Get  */
-router.get('/getGoals', function(req, res, next) {
-  res.json(goals)
+router.get('/getGoals', (req, res, next)=> {
+  let queryGetGoal = 'SELECT * FROM GOALS';
+  conection.query(queryGetGoal,(err,results,filds)=>{
+    if(err){
+      res.status(500).json(err);
+    }else{
+      res.status(200).json(results);
+    }
+  })
 });
 
 /* Post  */
-router.post('/addGoals', function(req, res, next) {
-  let timeStamp = Date.now()+Math.random();
+router.post('/addGoals',(req, res, next)=> {
     if (req.body && req.body.name && req.body.description && req.body.dueDate) {
-      req.body.id = timeStamp.toString()
-      goals.push(req.body)
-      res.status(200).json(goals)
-  } else {
-    res.status(400).json({error:'no se enviaron los parametros correctos'})
-  }  
+      let queryCreateGoals = 'INSERT INTO GOALS (name,description,dueDate) \
+      VALUES ("'+req.body.name+'","'+req.body.description+'","'+req.body.dueDate+'")'
+      conection.query(queryCreateGoals,(err, results, filds) => {
+        if (err) {
+          res.status(500).json(err)
+        } else {
+          res.status(200).json(results)
+        }
+    });
+  } 
 });
 
   /* Delete */
-router.delete('/removeGoals/:id', function(req, res, next) {
+router.delete('/removeGoals/:id', (req, res, next)=> {
    if (req.params && req.params.id) {
       let id = req.params.id;
-      goals = goals.filter(goals => goals.id !== id);
-      res.json(goals)
-   }   else {
-    res.status(200).json(goals)
-  }
+      let queryDeleteGoals = 'DELETE FROM GOALS WHERE id ="'+id+'"';
+      conection.query(queryCreateGoals,(err, results, filds) => {
+        if (err) {
+          res.status(500).json(err)
+        } else {
+          res.status(200).json(results)
+        }
+      }) 
+    }  
 });
 
 module.exports = router;

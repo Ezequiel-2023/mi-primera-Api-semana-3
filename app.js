@@ -82,6 +82,8 @@ conection.query(queryCreateTableTasks, (err, results, filds)=>{
 })
 
 
+conection.destroy()
+
 var app = express();
 
 // view engine setup

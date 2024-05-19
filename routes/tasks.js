@@ -2,34 +2,56 @@
 
 var express = require('express');
 var router = express.Router();
+
+const mysql = require('mysql2')
+
+var conection = mysql.createConnection({
+  host : 'localhost',
+  user : 'root',
+  password : 'Ardi_192*',
+  database : 'mysql'
+});
+
 let tasks = []
 
 /* Get  */
 router.get('/getTasks', function(req, res, next) {
-  res.json(tasks)
+  let queryGetTastks = 'SELECT * FROM TASKS';
+  conection.query(queryGetTastks,(err,results,filds)=>{
+    if(err){
+      res.status(500).json(err);
+    }else{
+      res.status(200).json(results);
+    }
+  })
 });
 
 /* Post  */
 router.post('/addTasks', function(req, res, next) {
-    let timeStamp = Date.now()+Math.random();
-    if (req.body && req.body.name && req.body.description && req.body.dueDate) {
-      req.body.id = timeStamp.toString()
-      tasks.push(req.body)
-      res.status(200).json(tasks)
-    } else {
-    res.status(400).json({error:'no se enviaron los parametros correctos'})
-    }  
-} );
-
+  if (req.body && req.body.name && req.body.description && req.body.dueDate) {
+    let queryCreateTasks = 'INSERT INTO TASKS (name,description,dueDate) \
+    VALUES ("'+req.body.name+'","'+req.body.description+'","'+req.body.dueDate+'")'
+    conection.query(queryCreateTasks,(err, results, filds) => {
+      if (err) {
+        res.status(500).json(err)
+      } else {
+        res.status(200).json(results)
+      }
+  });
+} 
+});
   /* Delete */
 router.delete('/removeTasks/:id', function(req, res, next) {
   if (req.params && req.params.id) {
     let id = req.params.id;
-    tasks = tasks.filter(task => task.id !== id);
-    res.json(tasks)
-  } else {
-   res.status(200).json(tasks)
-  }
+    let queryDeleteGoals = 'DELETE FROM TASKS WHERE id ="'+id+'"';
+    conection.query(queryCreateGoals,(err, results, filds) => {
+      if (err) {
+        res.status(500).json(err)
+      } else {
+        res.status(200).json(results)
+      }
+    }) 
+  }  
 });
-
 module.exports = router;
