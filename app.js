@@ -14,6 +14,73 @@ const { error } = require('console');
 const router =  express.Router();
 var cors = require('cors');
 const bodyParser = require('body-parser');
+const mysql = require('mysql2')
+
+var conection = mysql.createConnection({
+  host : 'localhost',
+  user : 'root',
+  password : 'Ardi_192*',
+  database : 'mysql'
+});
+
+conection.connect((err) => {
+  if (err) {
+    console.log('no se pudo conectar' + err.stack)
+  } else {
+    console.log('Conectado a la base de datos')
+  }
+});
+
+let queryCreateDB = 'CREATE DATABASE IF NOT EXISTS CONTROL_TAREAS_METAS';
+
+let queryCreateTableGoals = ` CREATE TABLE IF NOT EXISTS GOALS (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  dueDate VARCHAR(255) NOT NULL
+ )`;
+
+let queryCreateTableTasks = `CREATE TABLE IF NOT EXISTS TASKS (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  dueDate VARCHAR(255) NOT NULL
+)`;
+
+
+conection.query(queryCreateDB, (err, results, filds)=>{
+  if (err){
+    console.log(err);
+    return;
+  }else{
+  console.log('base de datos creada')
+  console.log(results); 
+  console.log(filds)
+  }
+})
+
+conection.query(queryCreateTableGoals, (err, results, filds)=>{
+  if (err){
+    console.log(err);
+    return;
+  }else{
+  console.log('tabla de metas creada')
+  console.log(results); 
+  console.log(filds)
+  }
+})
+
+conection.query(queryCreateTableTasks, (err, results, filds)=>{
+  if (err){
+    console.log(err);
+    return;
+  }else{
+  console.log('tabla tareas creada')
+  console.log(results); 
+  console.log(filds)
+  }
+})
+
 
 var app = express();
 
